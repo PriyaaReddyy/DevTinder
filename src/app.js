@@ -2,18 +2,32 @@ const express = require("express");
 
 const app = express();
 
-// app.use((req, res) => {
-//     res.send("Hello from the server");
+// app.use("/users" , (req, res) => {
+//     res.send("Demo demo demo");
 // });
 
-app.use("/test", (req, res) => {
-    res.send("Server is running on this route");
+//This will only handle GET call to /user
+app.get("/users", (req , res) => {
+    res.send({firstName:"Priya", lastName:"Reddy"});
 });
 
-app.use("/hello" , (req, res) => {
- res.send("Hello hello hello");
+app.post("/users" , (req, res) => {
+    //saving data to DB
+    res.send("Data succsessfully saved to the database!");
 });
+
+app.delete("/users" , (req, res) => {
+    res.send("Data deleted successfully");
+});
+
+// app.use("/test", (req, res) => {
+//     res.send("Server is running on this route");
+// });
+
+// app.use("/hello" , (req, res) => {
+//  res.send("Hello hello hello");
+// });
 
 app.listen(3000 , () => {
     console.log("Server is successfully listening on port 3000");
-});
+}); 
