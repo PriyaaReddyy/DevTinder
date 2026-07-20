@@ -28,6 +28,12 @@ app.delete("/users" , (req, res) => {
 //  res.send("Hello hello hello");
 // });
 
+app.get("user/:userId/:name/:password" ,(req,res) => {
+    console.log(req.params);   //Read dynamic route
+    console.log(req.query);  //Read data
+    res.send({firstName: "Priya", lastName: "Reddy"});
+} )
+
 app.listen(3000 , () => {
     console.log("Server is successfully listening on port 3000");
 }); 
