@@ -2,9 +2,42 @@ const express = require("express");
 
 const app = express();
 
-// app.use("/users" , (req, res) => {
-//     res.send("Demo demo demo");
-// });
+const {adminAuth , userAuth} = require("./middlewares/auth");
+
+//Handle auth middleware for all GET POST,.....requests
+app.use("/admin" ,  adminAuth);
+
+app.post("user/login" , (req, res) => {
+    res.send("user logged in successfully!!");
+});
+
+app.get("/user/data", userAuth , (req, res) => {
+        res.send("User data sent");
+});
+
+app.get("/admin/getAllData", (req, res) => {
+        res.send("All data sent");
+});
+
+app.get("/admin/deleteUser", (req, res) => {
+       res.send("Deleted a user");
+});
+
+
+
+app.listen(3000, () => {
+    console.log("Server is running on this port..3000");
+})
+
+
+
+
+
+/*
+
+app.use("/users" , (req, res) => {
+    res.send("Demo demo demo");
+});
 
 //This will only handle GET call to /user
 app.get("/users", (req , res) => {
@@ -66,3 +99,5 @@ app.get("/users" ,
     console.log("Handling the route user 4!!");
     res.send("4th Route Handler");
 });
+
+*/
