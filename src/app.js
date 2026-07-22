@@ -2,6 +2,33 @@ const express = require("express");
 
 const app = express();
 
+app.use("/", (err, req, res, next) => {
+    if (err) {
+        //Log your error!!
+        res.status(500).send("something went wrong");
+    }
+})
+
+app.get("/getAllData", (req, res, next) => {
+    try {
+        throw new Error("hgsdv");
+    } catch (err) {
+        res.status(500).send("Some error please contact support");
+    }
+});
+
+app.use("/", (err, req, res, next) => {
+    if (err) {
+        //Log your error!!
+        res.status(500).send("something went wrong");
+    }
+});
+
+app.listen(3000, () => {
+    console.log("Server is running on this port!! 3000");
+})
+
+/*
 const {adminAuth , userAuth} = require("./middlewares/auth");
 
 //Handle auth middleware for all GET POST,.....requests
@@ -29,7 +56,7 @@ app.listen(3000, () => {
     console.log("Server is running on this port..3000");
 })
 
-
+*/
 
 
 
