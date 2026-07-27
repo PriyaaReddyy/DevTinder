@@ -9,12 +9,13 @@ app.use(express.json());
 app.post("/signup", async (req, res) => {
     //Creating a new instance of a User model
     const user = new User(req.body);
+    console.log(user);
 
     try {
         await user.save();
         res.send("User signed up successfully");
     } catch (err) {
-        res.status(400).send("Error while signing up...!!");
+        res.status(400).send(err.message);
     }
 
 });
@@ -53,36 +54,51 @@ app.get("/feed", async (req, res) => {
 });
 
 //Delete a user from the database
-app.delete("/user" , async (req , res) => {
+app.delete("/user", async (req, res) => {
     const userId = req.body.userId;
 
-    try{
-        const user = await User.findByIdAndDelete({_id: userId});
+    try {
+        const user = await User.findByIdAndDelete({ _id: userId });
         // const user = await User.findByIdAndDelete(userId);
 
         res.send("User deleted successfully");
-    } catch (err){
+    } catch (err) {
         res.status(400).send("Something went wrong!!");
     }
 });
 
 //Update a user from the database
-app.patch("/user" , async (req , res) => {
-    
-    const userId = req.body.userId;
+app.patch("/user/:userId", async (req, res) => {
+
+    const userId = req.params?.userId;
     const data = req.body;
 
     console.log(data);
 
-    try{
-        const user = await User.findByIdAndUpdate({_id : userId} , data , 
+    try {
+        const allowedUpdates = [
+            "firstName",
+            "lastName",
+            "age",
+            "about",
+            "photourl"
+        ];
+
+        const isAllowedUpdate = Object.keys(data).every((k) => allowedUpdates.includes(k));
+
+        if (!isAllowedUpdate) {
+            throw new Error("Cannot Update");
+        }
+
+        const user = await User.findByIdAndUpdate({ _id: userId }, data,
             {
-                returnDocument : "after"
+                returnDocument: "after",
+                runValidators: true,
             }
         );
         res.send("User Updated successfully");
     } catch (err) {
-        res.status(400).send("Something went wrong");
+        res.status(400).send("Update Failed : " + err.message);
     }
 });
 
