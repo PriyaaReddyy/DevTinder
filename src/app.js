@@ -52,6 +52,41 @@ app.get("/feed", async (req, res) => {
     }
 });
 
+//Delete a user from the database
+app.delete("/user" , async (req , res) => {
+    const userId = req.body.userId;
+
+    try{
+        const user = await User.findByIdAndDelete({_id: userId});
+        // const user = await User.findByIdAndDelete(userId);
+
+        res.send("User deleted successfully");
+    } catch (err){
+        res.status(400).send("Something went wrong!!");
+    }
+});
+
+//Update a user from the database
+app.patch("/user" , async (req , res) => {
+    
+    const userId = req.body.userId;
+    const data = req.body;
+
+    console.log(data);
+
+    try{
+        const user = await User.findByIdAndUpdate({_id : userId} , data , 
+            {
+                returnDocument : "after"
+            }
+        );
+        res.send("User Updated successfully");
+    } catch (err) {
+        res.status(400).send("Something went wrong");
+    }
+});
+
+
 
 connectDB().then(() => {
     console.log("Database connection established!!");
