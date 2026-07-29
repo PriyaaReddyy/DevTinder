@@ -1,7 +1,7 @@
 const express = require("express");
 const connectDB = require("./config/database");
 const User = require("./models/user");
-const {validateSignUpData} = require("./utils/validation");
+const { validateSignUpData } = require("./utils/validation");
 const bcrypt = require("bcrypt");
 
 const app = express();
@@ -11,23 +11,23 @@ app.use(express.json());
 app.post("/signup", async (req, res) => {
 
     try {
-    //validate of data
-    validateSignUpData(req);
+        //validate of data
+        validateSignUpData(req);
 
-    const {firstName , lastName , email , password} = req.body;
+        const { firstName, lastName, email, password } = req.body;
 
-    //Encrypt the password
-    const passwordHash = await bcrypt.hash(password , 10);
-    console.log(passwordHash);
+        //Encrypt the password
+        const passwordHash = await bcrypt.hash(password, 10);
+        console.log(passwordHash);
 
-    //Creating a new instance of a User model
-    const user = new User({
-        firstName,
-        lastName,
-        email,
-        password : passwordHash,
-    });
-    console.log(user);
+        //Creating a new instance of a User model
+        const user = new User({
+            firstName,
+            lastName,
+            email,
+            password: passwordHash,
+        });
+        console.log(user);
 
         await user.save();
         res.send("User signed up successfully");
@@ -35,6 +35,30 @@ app.post("/signup", async (req, res) => {
         res.status(400).send(err.message);
     }
 
+});
+
+//Login Api
+
+app.post("/login", async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const user = await User.findOne({ emailId: email });
+
+        if (!user) {
+            throw new Error("Invalid Credentials");
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (isPasswordValid) {
+            res.send("Login Successfull..!!");
+        } else {
+            throw new Error("Invalid Credentials");
+        }
+    } catch (err) {
+        res.status(400).send("ERROR : " + err.message);
+    }
 });
 
 //Get user by email
