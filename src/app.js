@@ -1,17 +1,34 @@
 const express = require("express");
 const connectDB = require("./config/database");
 const User = require("./models/user");
+const {validateSignUpData} = require("./utils/validation");
+const bcrypt = require("bcrypt");
 
 const app = express();
 
 app.use(express.json());
 
 app.post("/signup", async (req, res) => {
-    //Creating a new instance of a User model
-    const user = new User(req.body);
-    console.log(user);
 
     try {
+    //validate of data
+    validateSignUpData(req);
+
+    const {firstName , lastName , email , password} = req.body;
+
+    //Encrypt the password
+    const passwordHash = await bcrypt.hash(password , 10);
+    console.log(passwordHash);
+
+    //Creating a new instance of a User model
+    const user = new User({
+        firstName,
+        lastName,
+        email,
+        password : passwordHash,
+    });
+    console.log(user);
+
         await user.save();
         res.send("User signed up successfully");
     } catch (err) {
